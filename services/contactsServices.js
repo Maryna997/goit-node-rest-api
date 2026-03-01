@@ -1,34 +1,37 @@
-import Contact from '../db/models/Contact.js';
+import Contact from "../db/models/Contact.js";
 
-export const listContacts = () => {
-  return Contact.findAll();
+export const listContacts = (owner) => {
+  return Contact.findAll({ where: { owner } });
 };
 
-export const getContactById = id => {
-  return Contact.findByPk(id);
+export const getContactById = (id, owner) => {
+  return Contact.findOne({ where: { id, owner } });
 };
 
-export const removeContact = async id => {
-  const contact = await getContactById(id);
+export const removeContact = async (id, owner) => {
+  const contact = await Contact.findOne({ where: { id, owner } });
   if (!contact) return null;
+
   await contact.destroy();
   return contact;
 };
 
-export const addContact = data => {
+export const addContact = (data) => {
   return Contact.create(data);
 };
 
-export const updateContact = async (contactId, data) => {
-  const contact = await getContactById(contactId);
+export const updateContact = async (id, owner, data) => {
+  const contact = await Contact.findOne({ where: { id, owner } });
   if (!contact) return null;
+
   await contact.update(data);
   return contact;
 };
 
-export const updateStatusContact = async (contactId, body) => {
-  const contact = await Contact.findByPk(contactId);
+export const updateStatusContact = async (id, owner, body) => {
+  const contact = await Contact.findOne({ where: { id, owner } });
   if (!contact) return null;
+
   await contact.update(body);
   return contact;
 };
